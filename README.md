@@ -14,7 +14,7 @@ This repository contains all files used to create the PDF report titled "Gun Vio
 
 ## About the Dataset
 
-The original data on mass shootings is from the Gun Violence Archive, and the compiled dataset is from figshare.
+The original data on mass shootings is from the [Gun Violence Archive](https://www.gunviolencearchive.org/), and the compiled dataset is from [figshare](https://figshare.com/articles/dataset/Gun_Violence/14552136).
 
 This analysis will be using the compiled dataset which contains additional columns of the separated year, month, and date of the incident.
 
