@@ -1,0 +1,21 @@
+<class 'pandas.core.frame.DataFrame'>
+RangeIndex: 4679 entries, 0 to 4678
+Data columns (total 14 columns):
+ #   Column           Non-Null Count  Dtype  
+---  ------           --------------  -----  
+ 0   City_or_County   4679 non-null   object 
+ 1   Day              4679 non-null   int64  
+ 2   Incident_Date    4679 non-null   object 
+ 3   Incident_ID      4679 non-null   int64  
+ 4   Incident_Time    3383 non-null   object 
+ 5   Latitude         4679 non-null   float64
+ 6   Longitude        4679 non-null   float64
+ 7   Month            4679 non-null   int64  
+ 8   State_Name       4679 non-null   object 
+ 9   Total_Victims    4679 non-null   int64  
+ 10  US_Region        4679 non-null   object 
+ 11  Victims_Injured  4679 non-null   int64  
+ 12  Victims_Killed   4679 non-null   int64  
+ 13  Year             4679 non-null   int64  
+dtypes: float64(2), int64(7), object(5)
+memory usage: 511.9+ KB
