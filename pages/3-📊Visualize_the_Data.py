@@ -6,9 +6,10 @@ import streamlit as st
 
 # for graphing
 import plotly.express as px
+import plotly.graph_objects as go
 
-st.set_page_config(page_title="Visualizing Incidents by Location")
-st.title("Visualizing Incidents by Location")
+st.set_page_config(page_title="Visualizing the Data")
+st.title("Visualizing the Data")
 
 # Removing the outliers, trim 10%
 def remove_outliers(data, col):
@@ -25,17 +26,15 @@ def remove_outliers(data, col):
 
 @st.cache_data
 def load_cleaned():
-    return pd.read_csv("data/cleaned_mass_shootings_2014-2023.csv")
+    state_party_color = pd.read_csv("data/state_party_color.csv")
+    cleaned = pd.read_csv("data/cleaned_mass_shootings_2014-2023.csv")
+    cleaned['State_Political_Color'] = cleaned["State_Name"].map(state_party_color.set_index("STATE_NAME")["COLOR"])
+    return cleaned
 cleaned = load_cleaned()
-
-@st.cache_data
-def load_party_color():
-    return pd.read_csv("data/state_party_color.csv")
-state_color = load_party_color()
 
 with st.sidebar:
     color = st.selectbox(
-        "Pick a feature to base the color sequence",
+        "Pick a feature for the map's color sequence",
         (
             "Total_Victims",
             "Victims_Injured",
@@ -99,7 +98,7 @@ else:
             picked_variable = 'quantile_rank'
             legend_title = 'Normalized ' + color
 
-            fig = px.scatter_mapbox(filtered, 
+            fig = px.scatter_map(filtered, 
                                     lat="Latitude", lon="Longitude", 
                                     hover_name="City_or_County", 
                                     hover_data={
@@ -142,7 +141,6 @@ else:
                     'West': '#d62728'       # Red
                 }
             else:
-                filtered['State_Political_Color'] = filtered["State_Name"].map(state_color.set_index("STATE_NAME")["COLOR"])
                 color_map  = {
                     'RED': '#FF0000', 
                     'BLUE': '#0000FF', 
@@ -151,7 +149,7 @@ else:
 
             picked_variable = color
 
-            fig = px.scatter_mapbox(filtered, 
+            fig = px.scatter_map(filtered, 
                                     lat="Latitude", lon="Longitude", 
                                     hover_name="City_or_County", 
                                     hover_data={
@@ -185,7 +183,74 @@ else:
 
         return fig
 
-    fig = create_chart(filtered, color)
 
+    def create_bar(filtered):
+        bar_filtered = filtered[["City_or_County", "State_Name", "Total_Victims", "Victims_Injured", "Victims_Killed", "Year", "Month"]]
+
+        # organize the city data
+        bar_city_filtered = pd.DataFrame(bar_filtered.groupby("City_or_County")[["Total_Victims", "Victims_Injured", "Victims_Killed"]].sum().sort_index())
+        bar_city_filtered.reset_index(inplace=True)
+        bar_city_filtered = bar_city_filtered.sort_values(by="Total_Victims", ascending=False).head(10)
+        city_fig = px.bar(bar_city_filtered, 
+                                x="City_or_County", 
+                                y=["Victims_Injured", "Victims_Killed"],
+                                title="Top 10 Cities by Total Victims")
+        city_fig.add_trace(go.Scatter(
+            x=bar_city_filtered['City_or_County'],
+            y=bar_city_filtered['Total_Victims'],
+            text=bar_city_filtered['Total_Victims'],
+            mode='text',
+            textposition='top center',
+            showlegend=False
+        ))
+        city_fig.update_layout(
+            legend=dict(
+                x=0.5, 
+                y=0.95,
+                bgcolor='rgba(255, 255, 255, 0.75)',
+                xanchor='left',
+                yanchor='top',
+            )
+        )
+
+        # organize the state data
+        bar_state_filtered = pd.DataFrame(bar_filtered.groupby("State_Name")[["Total_Victims", "Victims_Injured", "Victims_Killed"]].sum().sort_index())
+        bar_state_filtered.reset_index(inplace=True)
+        bar_state_filtered = bar_state_filtered.sort_values(by="Total_Victims", ascending=False).head(10)
+        state_fig = px.bar(bar_state_filtered, 
+                                x="State_Name", 
+                                y=["Victims_Injured", "Victims_Killed"],
+                                title="Top 10 States by Total Victims")
+        state_fig.add_trace(go.Scatter(
+            x=bar_state_filtered['State_Name'],
+            y=bar_state_filtered['Total_Victims'],
+            text=bar_state_filtered['Total_Victims'],
+            mode='text',
+            textposition='top center',
+            showlegend=False
+        ))
+        state_fig.update_layout(
+            legend=dict(
+                x=0.5,  # Position the legend outside the plot
+                y=0.95,  # Vertical position of the legend
+                bgcolor='rgba(255, 255, 255, 0.75)',
+                xanchor='left',
+                yanchor='top',
+            )
+        )
+
+        return city_fig, state_fig
+
+
+    map_fig = create_chart(filtered, color)
+    bar_city, bar_state = create_bar(filtered=filtered)
     # Plot!
-    st.plotly_chart(fig)
+    st.plotly_chart(map_fig)
+
+    bar_col1, bar_col2 = st.columns(2)
+    with bar_col1:
+        st.plotly_chart(bar_city)
+    
+    with bar_col2:
+        st.plotly_chart(bar_state)
+
