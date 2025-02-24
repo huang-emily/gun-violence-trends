@@ -68,7 +68,7 @@ def load_data():
     
     return cleaned
 
-with st.spinner("Loading data... Estimated to take around 30 seconds.", show_time=True):
+with st.spinner("Loading data... Estimated to take around 1 minute.", show_time=True):
     cleaned = load_data()
 
 with st.sidebar:
@@ -360,6 +360,74 @@ else:
 
         return incident_fig
 
+    def create_line(filtered, choice, feature):
+        if choice == "Year":
+            if feature == "Num_Incidents":
+                year_line = pd.DataFrame(filtered.groupby([choice])["Incident_ID"].count())
+                year_line.reset_index(inplace=True)
+                choice_title = "Number of Incidents per Year"
+                feature="Incident_ID"
+            elif feature in ["Victims_Injured", "Victims_Killed", "Total_Victims"]:
+                year_line = pd.DataFrame(filtered.groupby([choice])[feature].sum())
+                year_line.reset_index(inplace=True)
+                choice_title = "Number of" + feature + "per Year"
+            fig_line = px.line(year_line, 
+                               x='Year',
+                               y=feature,
+                               title=choice_title)
+            
+        elif choice == "Month":
+            if feature == "Num_Incidents":
+                month_line = pd.DataFrame(filtered[filtered['Year'] == year[0]].groupby(['Month'])["Incident_ID"].count().sort_index())
+                month_line.reset_index(inplace=True)
+                temp_name = 'Num_Incidents' + str(year[0])
+                month_line = month_line.rename(columns={'Incident_ID': temp_name})
+
+                for i in range(year[0] + 1, year[1] + 1):
+                    temp_year = pd.DataFrame(filtered[filtered['Year'] == i].groupby(['Month'])["Incident_ID"].count().sort_index())
+                    temp_year.reset_index(inplace=True)
+                    column_name = 'Num_Incidents' + str(i)
+                    temp_year = temp_year.rename(columns={'Incident_ID': column_name})
+                
+                    month_line = pd.concat([month_line, temp_year[column_name]], axis=1)
+                month_line = month_line.set_index('Month')
+                choice_title = "Number of Incidents by Month"
+            
+            elif feature in ["Victims_Injured", "Victims_Killed", "Total_Victims"]:
+                month_line = pd.DataFrame(filtered[filtered['Year'] == year[0]].groupby(['Month'])[feature].sum().sort_index())
+                month_line.reset_index(inplace=True)
+                temp_name = feature + str(year[0])
+                month_line = month_line.rename(columns={feature: temp_name})
+
+                for i in range(year[0] + 1, year[1] + 1):
+                    temp_year = pd.DataFrame(filtered[filtered['Year'] == i].groupby(['Month'])[feature].sum().sort_index())
+                    temp_year.reset_index(inplace=True)
+                    column_name = feature + str(i)
+                    temp_year = temp_year.rename(columns={feature: column_name})
+                
+                    month_line = pd.concat([month_line, temp_year[column_name]], axis=1)
+                month_line = month_line.set_index('Month')
+                choice_title = "Number of " + feature + " by Month"
+
+            fig_line = px.line(month_line, title=choice_title)
+            
+        return fig_line
+
+    def create_yeardist(filtered, feature):
+        if feature == "Num_Incidents":
+            year_dist = pd.DataFrame(filtered.groupby(["Year"])["Incident_ID"].count())
+            year_dist.reset_index(inplace=True)
+
+            fig_hist = ff.create_distplot([year_dist['Incident_ID']], group_labels=["Incident_ID"], bin_size=100)
+            
+        elif feature in ["Victims_Injured", "Victims_Killed", "Total_Victims"]:
+            year_dist = pd.DataFrame(filtered.groupby(["Year"])[feature].sum())
+            year_dist.reset_index(inplace=True)
+
+            fig_hist = ff.create_distplot([year_dist[feature]], group_labels=[feature], bin_size=100)
+
+        return fig_hist
+
     # statistics on shown incidents
     col1, col2, col3, col4 = st.columns(4)
     col1.metric("Number of Incidents", filtered["Incident_ID"].count())
@@ -383,7 +451,7 @@ else:
 
     # give option for location type
     # then plot the bar charts
-    tab1, tab2 = st.tabs(["By City/County", "By State"])
+    tab1, tab2, tab3, tab4 = st.tabs(["By City/County", "By State", "By Year", "By Month"])
 
     with tab1:
         if pd.unique(filtered["City_or_County"]).size < 2:
@@ -424,4 +492,36 @@ else:
             
             st.plotly_chart(incident_fig)
 
+    with tab3:
+        year_feature_choice = st.selectbox(
+            "Pick a feature for the 'per Year' line chart",
+            (
+                "Num_Incidents",
+                "Victims_Injured",
+                "Victims_Killed",
+                "Total_Victims"
+            )
+        )
+        year_line = create_line(filtered=filtered, choice="Year", feature=year_feature_choice)
+        year_dist = create_yeardist(filtered=filtered, feature=year_feature_choice)
+        
+        year_col1, year_col2 = st.columns(2)
+        with year_col1:
+            st.plotly_chart(year_line)
+        with year_col2:
+            st.plotly_chart(year_dist)
+        
+    
+    with tab4:
+        month_feature_choice = st.selectbox(
+            "Pick a feature for the 'per Month' line chart",
+            (
+                "Num_Incidents",
+                "Victims_Injured",
+                "Victims_Killed",
+                "Total_Victims"
+            )
+        )
+        month_line = create_line(filtered=filtered, choice="Month", feature=month_feature_choice)
+        st.plotly_chart(month_line)
 
