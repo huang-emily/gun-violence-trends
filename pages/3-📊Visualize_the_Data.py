@@ -42,30 +42,7 @@ def remove_outliers(data, col):
 @st.cache_data(show_spinner=False)
 def load_data():
     # import the state popoulation and rename the columns
-    state_pop = pd.read_csv("data/cleaned_state_est_2014_2023.csv")
-    # import the city population and rename the columns
-    city_pop = pd.read_csv("data/cleaned_city_est_2014_2023.csv")
-    state_party_color = pd.read_csv("data/state_party_color.csv")
-    cleaned = pd.read_csv("data/cleaned_mass_shootings_2014-2023.csv")
-    cleaned['State_Political_Color'] = cleaned["State_Name"].map(state_party_color.set_index("STATE_NAME")["COLOR"])
-    
-    def get_year(row, choice):
-        if choice == "State_Name":
-            state_name = row[choice]
-            row_year = row["Year"]
-            
-            return state_pop[state_pop["NAME"] == state_name]["POPESTIMATE" + str(row_year)].values[0]
-       
-        elif choice == "City_or_County":
-            city_name = row[choice]
-            state_name = row["State_Name"]
-            row_year = row["Year"]
-            
-            return city_pop[(city_pop["NAME"] == city_name) & (city_pop["STNAME"] == state_name)]["POPESTIMATE" + str(row_year)].values[0]
-
-    cleaned["State_PopEstimate"] = cleaned.apply(get_year, args=(["State_Name"]), axis=1)
-    cleaned["City_PopEstimate"] = cleaned.apply(get_year, args=(["City_or_County"]), axis=1)
-    
+    cleaned = pd.read_csv("data/merged_mass_shootings_2014-2023.csv")
     return cleaned
 
 with st.spinner("Loading data... Estimated to take around 1 minute.", show_time=True):
@@ -358,7 +335,7 @@ else:
             )
             incident_fig.update_xaxes(categoryorder="total descending")
 
-        return incident_fig
+        return incident_fig, incident_rate
 
     def create_line(filtered, choice, feature):
         if choice == "Year":
@@ -375,6 +352,7 @@ else:
                                x='Year',
                                y=feature,
                                title=choice_title)
+            fig_data = year_line
             
         elif choice == "Month":
             if feature == "Num_Incidents":
@@ -410,8 +388,9 @@ else:
                 choice_title = "Number of " + feature + " by Month"
 
             fig_line = px.line(month_line, title=choice_title)
+            fig_data = month_line
             
-        return fig_line
+        return fig_line, fig_data
 
     def create_yeardist(filtered, feature):
         if feature == "Num_Incidents":
@@ -426,7 +405,7 @@ else:
 
             fig_hist = ff.create_distplot([year_dist[feature]], group_labels=[feature], bin_size=100)
 
-        return fig_hist
+        return fig_hist, year_dist
 
     # statistics on shown incidents
     col1, col2, col3, col4 = st.columns(4)
@@ -459,7 +438,7 @@ else:
         else:
             total_bar_fig, num_bar_fig = create_bar(filtered=filtered, choice="City_or_County")
             total_dist_fig, num_dist_fig = create_dist(filtered=filtered, choice="City_or_County")
-            incident_fig = create_incidentchart(filtered=filtered, choice="City_or_County")
+            incident_fig, incident_data = create_incidentchart(filtered=filtered, choice="City_or_County")
 
             city_col1, city_col2 = st.columns(2)
             with city_col1:
@@ -469,9 +448,7 @@ else:
             with city_col2:
                 st.plotly_chart(total_dist_fig)
                 st.plotly_chart(num_dist_fig)
-            
             st.plotly_chart(incident_fig)
-
 
     with tab2:
         if pd.unique(filtered["State_Name"]).size < 2:
@@ -479,7 +456,7 @@ else:
         else:
             total_bar_fig, num_bar_fig = create_bar(filtered=filtered, choice="State_Name")
             total_dist_fig, num_dist_fig = create_dist(filtered=filtered, choice="State_Name")
-            incident_fig = create_incidentchart(filtered=filtered, choice="State_Name")
+            incident_fig, incident_data = create_incidentchart(filtered=filtered, choice="State_Name")
             
             state_col1, state_col2 = st.columns(2)
             with state_col1:
@@ -489,7 +466,6 @@ else:
             with state_col2:
                 st.plotly_chart(total_dist_fig)
                 st.plotly_chart(num_dist_fig)
-            
             st.plotly_chart(incident_fig)
 
     with tab3:
@@ -502,15 +478,14 @@ else:
                 "Total_Victims"
             )
         )
-        year_line = create_line(filtered=filtered, choice="Year", feature=year_feature_choice)
-        year_dist = create_yeardist(filtered=filtered, feature=year_feature_choice)
+        year_line, year_data1 = create_line(filtered=filtered, choice="Year", feature=year_feature_choice)
+        year_dist, year_data2 = create_yeardist(filtered=filtered, feature=year_feature_choice)
         
         year_col1, year_col2 = st.columns(2)
         with year_col1:
             st.plotly_chart(year_line)
         with year_col2:
             st.plotly_chart(year_dist)
-        
     
     with tab4:
         month_feature_choice = st.selectbox(
@@ -522,6 +497,6 @@ else:
                 "Total_Victims"
             )
         )
-        month_line = create_line(filtered=filtered, choice="Month", feature=month_feature_choice)
+        month_line, month_data = create_line(filtered=filtered, choice="Month", feature=month_feature_choice)
         st.plotly_chart(month_line)
 

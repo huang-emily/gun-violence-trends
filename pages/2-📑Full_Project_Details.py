@@ -67,6 +67,8 @@ st.sidebar.markdown('''
     - [Summary Statistics](#summary-statistics)
     - [Exploring Trends with Time](#exploring-trends-with-time)
     - [Exploring Trends with Location](#exploring-trends-with-location)
+    - [Understanding the Underlying Reason](#understanding-the-underlying-reason)
+    - [Takeaways](#takeaways)
     ''', unsafe_allow_html=True)
 
 # page content 
@@ -158,11 +160,7 @@ st.markdown(
 
     Now that we understand the features we're sure we want to work with, it's now a good 
     time to look into the observations and see if we need to drop any rows.
-    """
-)
 
-st.markdown(
-    """
     First, we want to make sure all observations are indeed mass shootings which
     is defined by the Gun Violence Archive as:
     - **mass shooting**: a shooting with a minimum four victims shot, either injured 
@@ -310,51 +308,7 @@ st.markdown(
 
     I'll first be exploring the number of incidents per year before diving into how 
     the incidents break down by month. 
-    """
-)
 
-num_incidents_line = pd.DataFrame(cleaned.groupby(['Year'])['Incident_ID'].count())
-num_incidents_line.reset_index(inplace=True)
-fig_num_incidents_line = px.line(num_incidents_line, x='Year', y='Incident_ID', title='Number of Incidents per Year')
-fig_num_incidents_hist = ff.create_distplot([num_incidents_line['Incident_ID']], group_labels=['Incident_ID'], bin_size=100)
-
-# display plotly object on website
-num_incidents_col_chart1, num_incidents_col_chart2 = st.columns(2)
-
-with num_incidents_col_chart1:
-    st.plotly_chart(fig_num_incidents_line, on_select="rerun")
-
-with num_incidents_col_chart2:
-    st.plotly_chart(fig_num_incidents_hist, on_select="rerun")
-
-# set up line chart for year plotting
-# set up plotly object
-victim_option = st.selectbox(
-    "Choose which victim variable to view in 'Year'",
-    ("Victims_Injured", "Victims_Killed", "Total_Victims")
-)
-
-df_line = pd.DataFrame(cleaned.groupby(['Year'])[victim_option].sum().sort_index())
-df_line.reset_index(inplace=True)
-if victim_option in ["Victims_Injured", "Victims_Killed"]:
-    victim_text = victim_option.split("_")[1]
-    title_string = "Number of Victims " + victim_text + " per Year"
-else:
-    title_string = "Total Number of Victims per Year"
-fig_line = px.line(df_line, x='Year', y=victim_option, title=title_string)
-fig_hist = ff.create_distplot([df_line[victim_option]], group_labels=[victim_option], bin_size=100)
-
-# display plotly object on website
-col_chart1, col_chart2 = st.columns(2)
-
-with col_chart1:
-    st.plotly_chart(fig_line, on_select="rerun")
-
-with col_chart2:
-    st.plotly_chart(fig_hist, on_select="rerun")
-
-st.markdown(
-    """
     We plot the total number of victims, number of victims killed, and number of victims injured
     and see a noticeable spike in the number after 2019. In order to make sure that this 
     spike is statistically significant, we plot the numbers on a distribution plot or 
@@ -369,78 +323,6 @@ st.markdown(
     incidents.
 
     Let's look at the trends by 'Month' now.
-    """
-)
-
-
-df_num_incidents = pd.DataFrame(cleaned[cleaned['Year'] == 2014]['Month'].value_counts().sort_index())
-df_num_incidents.reset_index(inplace=True)
-temp_name = 'Num_Incidents' + str(2014)
-df_num_incidents = df_num_incidents.rename(columns={'count': temp_name})
-
-for i in range(2015, 2024):
-    temp_year = pd.DataFrame(cleaned[cleaned['Year'] == i]['Month'].value_counts().sort_index())
-    temp_year.reset_index(inplace=True)
-    column_name = 'Num_Incidents' + str(i)
-    temp_year = temp_year.rename(columns={'count': column_name})
-
-    df_num_incidents = pd.concat([df_num_incidents, temp_year[column_name]], axis=1)
-df_num_incidents = df_num_incidents.set_index('Month')
-
-num_incidents_month = px.line(df_num_incidents, title='Number of Incidents per Month')
-st.plotly_chart(num_incidents_month, on_select="rerun")
-
-# set up line chart for month plotting
-victim_month_option = st.selectbox(
-    "Choose which victim variable to view in 'Month'",
-    ("Victims_Injured", "Victims_Killed", "Total_Victims")
-)
-
-if victim_month_option in ["Victims_Injured", "Victims_Killed"]:
-    victim_text = victim_month_option.split("_")[1]
-    month_title_string = "Number of Victims " + victim_text + " per Month"
-else:
-    month_title_string = "Total Number of Victims per Month"
-
-df_month = pd.DataFrame(cleaned[cleaned['Year'] == 2014].groupby(['Month'])[victim_month_option].sum().sort_index())
-df_month.reset_index(inplace=True)
-temp_name = victim_month_option + str(2014)
-df_month = df_month.rename(columns={victim_month_option: temp_name})
-
-for i in range(2015, 2024):
-    temp_year = pd.DataFrame(cleaned[cleaned['Year'] == i].groupby(['Month'])[victim_month_option].sum().sort_index())
-    temp_year.reset_index(inplace=True)
-    column_name = victim_month_option + str(i)
-    temp_year = temp_year.rename(columns={victim_month_option: column_name})
-
-    df_month = pd.concat([df_month, temp_year[column_name]], axis=1)
-df_month = df_month.set_index('Month')
-
-# outliers removed
-df_month_no_outliers = pd.DataFrame(no_outliers_cleaned[no_outliers_cleaned['Year'] == 2014].groupby(['Month'])[victim_month_option].sum().sort_index())
-df_month_no_outliers.reset_index(inplace=True)
-temp_name = victim_month_option + str(2014)
-df_month_no_outliers = df_month_no_outliers.rename(columns={victim_month_option: temp_name})
-
-for i in range(2015, 2024):
-    temp_year = pd.DataFrame(no_outliers_cleaned[no_outliers_cleaned['Year'] == i].groupby(['Month'])[victim_month_option].sum().sort_index())
-    temp_year.reset_index(inplace=True)
-    column_name = victim_month_option + str(i)
-    temp_year = temp_year.rename(columns={victim_month_option: column_name})
-
-    df_month_no_outliers = pd.concat([df_month_no_outliers, temp_year[column_name]], axis=1)
-
-df_month_no_outliers = df_month_no_outliers.set_index('Month')
-
-no_outliers_title = month_title_string + " - No Outliers"
-fig_month_no_outliers = px.line(df_month_no_outliers, title=no_outliers_title)
-fig_month = px.line(df_month, title=month_title_string)
-
-st.plotly_chart(fig_month, on_select="rerun")
-st.plotly_chart(fig_month_no_outliers, on_select="rerun")
-
-st.markdown(
-    """
     We can see a confirmation of what we saw in the summary statistics: **Summer 
     months have more incidents (and therefore victims) compared to other months**.
     """
@@ -450,7 +332,68 @@ st.markdown(
 st.header("Exploring Trends with Location")
 st.markdown(
     """
-    After taking a look at the incidents by time, it would be interesting if 
-    there is a factor location plays in mass shootings.
+    Places with a higher population tend to have a higher number of incidents.
+    This is intuitive since higher density regions tend to have a higher crime rate, 
+    meaning residents have a higher likelihood of being victims of a shooting.  
+
+    Though a higher density population implies a higher crime rate, cities and states 
+    from the South had a higher incident rate on average compared to cities and states 
+    from other regions.
+
+    From these observations in the data, there may be some pattern occurring where 
+    locations in the South have a higher rate of mass shootings compared to other locations.
+
+    
+    """
+)
+
+# exploring incident trends in relation to time
+st.header("Understanding the Underlying Reason")
+st.markdown(
+    """
+    Looking at the same chart but now with the associated party color, there is an 
+    equal amount of red and blue states when it comes to the number of incidents in 
+    a state and in a specific city. 
+
+    However, when we take a look at incident rates for each state, we can see Red 
+    states are by far more prevalent than the other states. 
+    
+    From this article, Red states have historically been pro-Second amendment, making 
+    their lawmakers more likely to make guns more accessible. 
+
+    However, we can see from the chart in the article that looser guns laws are 
+    associated with higher gun deaths. 
+    """
+)
+
+st.image("images/In Red States, ‘Gun Reform’ Means Making It Easier To Buy And Carry Guns.png")
+st.image("images/potts_guns-red-states_0513-standard-2.png")
+
+st.markdown(
+    """
+    Though Red states have more access to guns, Americans as a whole are acquiring more guns. 
+    Charts from the Bureau of Alcohol, Tobacco, Firearms and Explosives show a similar pattern 
+    to the “Number of Incidents each Year” chart where there is a sudden spike after 2019. 
+
+    """
+)
+
+st.image("images/increase-in-ghost-guns-recover.png")
+st.image("images/nfa_firearms_processed_fy23.png")
+st.image("images/nfa_forms_processed_fy23_v2.png")
+
+# exploring incident trends in relation to time
+st.header("Takeaways")
+st.markdown(
+    """
+    From this study, we were able to observe that mass shootings were in fact more frequent as 
+    of recent years. Incidents were likely to occur during the summer months when more traveling 
+    was done, but incidents were notably more frequent in Red states where gun laws are more 
+    lenient compared to Purple and Blue states. 
+
+    However, as a whole, the United States is acquiring more guns, and more access to guns means 
+    more opportunities for mass shootings to occur regardless of location. 
+
+
     """
 )
