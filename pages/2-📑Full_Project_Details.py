@@ -299,32 +299,45 @@ st.markdown(
 st.header("Exploring Trends with Time")
 st.markdown(
     """
-    We've taken a look at the data as a whole. It's time to look at the data in one 
-    of the two aspects I mentioned before: Time.
 
-    As a refresher, the features I'll be using for the exploration are: **Year** and 
-    **Month**. Though we have Day, the Month and Year of the incident will suffice 
-    in showing the trends of these incidents.
+    Using the Data Visualization page as reference, we can tale a look at the data 
+    with "time" in mind. 
 
-    I'll first be exploring the number of incidents per year before diving into how 
-    the incidents break down by month. 
+    As a refresher, the features I'll be taking a look at for time are **Year** and 
+    **Month**. Though we have Day, the level of granularity that it provides is too 
+    precise for what we want tofigure out. **Month** and **Year** provide the level of 
+    granularity that we want to analyze since it aligns well with seasons and holidays.
 
-    We plot the total number of victims, number of victims killed, and number of victims injured
-    and see a noticeable spike in the number after 2019. In order to make sure that this 
-    spike is statistically significant, we plot the numbers on a distribution plot or 
-    histogram and see a bimodal distribution.
+    When looking at **Year** with the total number of victims, number of victims killed, 
+    and number of victims injured, we see a noticeable spike in these numbers after 2019. 
+    In order to make sure that this spike is statistically significant, we also plot the 
+    distribution plots or histograms which again are located in the Data Visualization page.
 
-    Both of these charts match the charts shown by the number of incidents per year. This makes 
-    sense as the number of victims are caused by an incident.
+    When we compare the histograms with the line charts, we can see that the spike is 
+    statistically significant as the histograms show a bimodal distribution which means 
+    the spike was enough to create two hills rather the one which is the norm. To be 
+    clear, the bimodal distribution is present in all statistics, meaning there is a 
+    meaningful spike in incidents. 
 
-    This bimodal distribution tells us there is a two high points in the data, meaning the 
-    spike is considerable enough to cause the distribtution to have two high points. This trend 
-    is seen for all three victim statistics and again matches the statistics for number of 
-    incidents.
+    Factors like the political climate, unemployment, and racial inequality may have 
+    played a part in this rise of incidents.
 
-    Let's look at the trends by 'Month' now.
-    We can see a confirmation of what we saw in the summary statistics: **Summer 
-    months have more incidents (and therefore victims) compared to other months**.
+    When looking at the **Month** with the total number of victims, number of victims 
+    killed, and number of victims injured, we see that our initial findings from the summary 
+    statistics ring true, **Summer months do indeed have more incidents (and therefore more 
+    victims) compared to others month in the a given year.**
+
+    There are a number of reasons why this could be the case:
+    - The summer months tend to be when families are on vacation, meaning there are more people 
+    outside exposed to other people.
+    - Because of the hot weather during these months in the US, people are also incentivized to 
+    go outside and expose themselves to other people.
+    - Both previous statements may be especially true after a long period of social isolation 
+    caused by COVID.
+
+    Now that we've taken a look at the data with respect to time, we'll now take a look at 
+    the data with respect to location.
+
     """
 )
 
