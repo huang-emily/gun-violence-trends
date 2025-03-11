@@ -1,8 +1,8 @@
 import streamlit as st
 
 st.set_page_config(page_title="About this Project")
-
 st.title("About this Project")
+
 st.markdown(
     """
     This project was created by Emily Huang. To view the project files, visit the [Github repo](https://github.com/huang-emily/gun-violence-trends/tree/main). 

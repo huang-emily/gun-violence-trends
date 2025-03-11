@@ -5,6 +5,9 @@ import plotly.express as px
 import plotly.figure_factory as ff
 import io
 
+st.set_page_config(page_title="Full Project Details")
+st.title("Full Project Details")
+
 # helper functions for displaying things
 def get_df_info(df):
     buffer = io.StringIO ()
