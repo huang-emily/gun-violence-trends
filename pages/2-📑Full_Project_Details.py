@@ -69,6 +69,7 @@ st.sidebar.markdown('''
     - [Exploring Trends with Location](#exploring-trends-with-location)
     - [Understanding the Underlying Reason](#understanding-the-underlying-reason)
     - [Takeaways](#takeaways)
+    - [Sources Used](#sources-used)
     ''', unsafe_allow_html=True)
 
 # page content 
@@ -349,19 +350,58 @@ st.markdown(
     Again, using the Data Visualization page as reference, we can take a look at the data 
     with "location" in mind. 
 
-    Starting with US Region, 
+    Starting with US Region, we see some interesting statistics:
+    
+    For the Norteast,
+    - 13.21% of all unique reported incidents
+    - 12.38% of all victims involved in any incident
+    - 13.21% of all injured victims involved in any reported incident
+    - 9.02% of all killed victims involved in any reported incident
+    
+    For the Midwest, 
+    - 26.18% of all unique reported incidents
+    - 25.28% of all victims involved in any incident
+    - 25.84% of all injured victims involved in any reported incident
+    - 23.00% of all killed victims involved in any reported incident
 
-    Places with a higher population tend to have a higher number of incidents.
-    This is intuitive since higher density regions tend to have a higher crime rate, 
-    meaning residents have a higher likelihood of being victims of a shooting.  
+    For the South,
+    - 45.24% of all unique reported incidents
+    - 45.24% of all victims involved in any incident
+    - 44.54% of all injured victims involved in any reported incident
+    - 48.09% of all killed victims involved in any reported incident
 
-    Though a higher density population implies a higher crime rate, cities and states 
-    from the South had a higher incident rate on average compared to cities and states 
-    from other regions.
+    For the West, 
+    - 15.37% of all unique reported incidents
+    - 17.09% of all victims involved in any incident
+    - 16.41% of all injured victims involved in any reported incident
+    - 19.88% of all killed victims involved in any reported incident
 
-    From these observations in the data, there may be some pattern occurring where 
-    locations in the South have a higher rate of mass shootings compared to other locations.
+    Looking over these numbers, we see that South makes up nearly half of all recorded incidents 
+    in the data. This is true across all the victim statistics too. If we include both Midwest 
+    and the South, these two regions make up nearly majority of the incidents in the data base. 
+    This raises an interesting question of whether or not political leanings have an effect on 
+    whether an incident occurs in a location or not since an overwhelming amount of the red states 
+    are in the South and Midwest regions of the USA. 
+    
+    When we look at the states and cities with the most incidents, unsurprisingly the states and 
+    cities with a higher population are more likely to have a higher number of incidents. This is 
+    intuitive since higher density regions tend to have a higher crime rate, meaning residents have 
+    a higher likelihood of being victims of a shooting.
+    
+    In order to compare each state and city at a more similar level, we calculate the incident rate 
+    for each state. This is calculated by: 
+    1. Get the number of incidents that occur in a specific year
+    2. Divide the incident number for that year by the population recorded by the Census Bureau that year
+    3. Repeat steps 1 and 2 until you get the incident rate for each year from 2014 - 2023
+    4. Get the average incident rate for all calculated years. 
 
+    With the incident rate calculated on both the state and city level, we can now compare all states 
+    and cities to similar grounds. From here, we can see that our observation from the US Region 
+    level of granularity that the cities and states from red states make up a good portion of locations 
+    with the highest incident rates.
+    
+    From these observations in the data, there may be some pattern occurring where locations in the South 
+    have a higher rate of mass shootings compared to other locations.
     
     """
 )
@@ -370,18 +410,16 @@ st.markdown(
 st.header("Understanding the Underlying Reason")
 st.markdown(
     """
-    Looking at the same chart but now with the associated party color, there is an 
-    equal amount of red and blue states when it comes to the number of incidents in 
-    a state and in a specific city. 
-
-    However, when we take a look at incident rates for each state, we can see Red 
-    states are by far more prevalent than the other states. 
+    From our observations of the data in the lens of "time" and "location", we see that there is a more 
+    obvious pattern with the "location", namely locations that lean more towards conservative or Republican 
+    see a higher rate of mass shooting incidents compared to locations that lean more towards liberal or 
+    Democratic. 
     
-    From this article, Red states have historically been pro-Second amendment, making 
-    their lawmakers more likely to make guns more accessible. 
+    This observation may cause a question to pop up: "Why do locations that lean more Red have higher incident 
+    rates?" From this article, Red states have historically been pro-Second amendment, making their lawmakers 
+    more likely to make guns more accessible. However, we can see from the chart in the article that looser guns 
+    laws are associated with higher gun deaths. 
 
-    However, we can see from the chart in the article that looser guns laws are 
-    associated with higher gun deaths. 
     """
 )
 
@@ -390,9 +428,9 @@ st.image("images/potts_guns-red-states_0513-standard-2.png")
 
 st.markdown(
     """
-    Though Red states have more access to guns, Americans as a whole are acquiring more guns. 
-    Charts from the Bureau of Alcohol, Tobacco, Firearms and Explosives show a similar pattern 
-    to the “Number of Incidents each Year” chart where there is a sudden spike after 2019. 
+    On top of that, Americans as a whole are acquiring more guns. Charts from the Bureau of Alcohol, 
+    Tobacco, Firearms and Explosives show a similar pattern to the “Number of Incidents each Year” 
+    chart where there is a sudden spike after 2019. 
 
     """
 )
@@ -411,8 +449,27 @@ st.markdown(
     lenient compared to Purple and Blue states. 
 
     However, as a whole, the United States is acquiring more guns, and more access to guns means 
-    more opportunities for mass shootings to occur regardless of location. 
-
+    more opportunities for mass shootings to occur regardless of location. It seems if we as a country 
+    are looking to lower the rate of mass shootings occuring nationwide, the solution may to restrict 
+    or ban gun ownership rather than allow more people to gain access to them. 
 
     """
 )
+
+
+st.header("Sources Used")
+st.markdown(
+    """
+    The following resources were used to support the study conducted.
+    
+    Articles:
+    - [Ammo Article on How Many Guns in the US](https://ammo.com/articles/how-many-guns-in-the-us)
+    - [ATF Data Statistics](https://www.atf.gov/resource-center/data-statistics)
+    - [FiveThirtyEight Article on Republican Expanding Gun Rights](https://fivethirtyeight.com/features/republican-states-expanding-gun-rights-mass-shootings/)
+
+    Assisting Data Sources:
+    - [Harvard Dataverse Dataset for Political Leaning by State](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/42MVDX)
+    - [US Census Bureau Dataset for State and City Population](https://www.census.gov/data/datasets.html)
+    
+    """
+, unsafe_allow_html=True)

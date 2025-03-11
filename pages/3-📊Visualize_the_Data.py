@@ -286,9 +286,9 @@ else:
         }
 
         if choice == "State_Name":
-            bar_incident = pd.DataFrame(incident_filtered.groupby(["State_Name", "State_Political_Color", "Year", "State_PopEstimate"]).value_counts())
+            bar_incident = pd.DataFrame(incident_filtered.groupby(["State_Name", "State_Political_Color", "Year", "State_PopEstimate"])["Incident_ID"].count())
             bar_incident.reset_index(inplace=True)
-            bar_incident["State_IncidentRate"] = (bar_incident["count"]/bar_incident["State_PopEstimate"])*100000
+            bar_incident["State_IncidentRate"] = (bar_incident["Incident_ID"]/bar_incident["State_PopEstimate"])*100000
             incident_rate = pd.DataFrame(bar_incident.groupby(["State_Name", "State_Political_Color"])["State_IncidentRate"].mean())
             incident_rate.reset_index(inplace=True)
             incident_rate = incident_rate.sort_values(by="State_IncidentRate", ascending=False).head(20)
