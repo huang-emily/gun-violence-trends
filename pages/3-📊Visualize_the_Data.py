@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 from scipy.stats import rankdata
-import streamlit as st
 
 # for graphing
 import plotly.express as px
