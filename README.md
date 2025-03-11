@@ -1,6 +1,8 @@
 # Data Analytics Study: Gun Violence Trends in the USA
 This repository contains all files used to create the PDF report titled "Gun Violence Trends in America". The report contains all relevant files and visualizations that helped show the rising trend in mass shooting incidents.
 
+Website: [Analyzing Gun Trends in the US](https://huang-emily-gun-violence-trends-1-about-this-project-x3tuz5.streamlit.app/Visualize_the_Data)
+
 ## Tools used
 
 - **Programming**: Python, SQL
