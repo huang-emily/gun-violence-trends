@@ -300,7 +300,7 @@ st.header("Exploring Trends with Time")
 st.markdown(
     """
 
-    Using the Data Visualization page as reference, we can tale a look at the data 
+    Using the Data Visualization page as reference, we can take a look at the data 
     with "time" in mind. 
 
     As a refresher, the features I'll be taking a look at for time are **Year** and 
@@ -345,6 +345,12 @@ st.markdown(
 st.header("Exploring Trends with Location")
 st.markdown(
     """
+    
+    Again, using the Data Visualization page as reference, we can take a look at the data 
+    with "location" in mind. 
+
+    Starting with US Region, 
+
     Places with a higher population tend to have a higher number of incidents.
     This is intuitive since higher density regions tend to have a higher crime rate, 
     meaning residents have a higher likelihood of being victims of a shooting.  
