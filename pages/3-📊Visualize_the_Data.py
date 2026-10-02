@@ -12,8 +12,8 @@ st.set_page_config(page_title="Visualize the Data")
 st.title("Visualize the Data")
 
 st.markdown("""
-    These charts were originally created in Power BI which you can find the file for in 
-    the [Github repo](https://github.com/huang-emily/gun-violence-trends).
+    These charts were originally created in Tableau which you can find the link 
+    [here](https://public.tableau.com/app/profile/emily.huang1804/viz/GunViolenceTrendsinAmericafrom2014-2023/Dashboard1).
             
     The filters in the sidebar allow you to configure the incident dataset by Year, 
     US Region, and State. Selecting the US Region will reset the selection of the State, 

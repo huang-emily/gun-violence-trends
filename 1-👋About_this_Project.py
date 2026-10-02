@@ -12,7 +12,7 @@ st.markdown(
 
     ## Tools used
     - **Data Analysis**: Python (Numpy, Pandas), SQL
-    - **Visualizations**: Power BI, Python (Matplotlib, Plotly, Seaborn, Streamlit)
+    - **Visualizations**: Tableau, Python (Matplotlib, Plotly, Seaborn, Streamlit)
     - **Code Management**: SQL Server Management Studio, Jupyter Notebook
 
     ## Proposed Questions
