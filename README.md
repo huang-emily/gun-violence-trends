@@ -1,12 +1,27 @@
 # Data Analytics Study: Gun Violence Trends in the USA
 This repository contains all files used to create the PDF report titled "Gun Violence Trends in America". The report contains all relevant files and visualizations that helped show the rising trend in mass shooting incidents.
 
-Website: [Analyzing Gun Trends in the US](https://huang-emily-gun-violence-trends-1-about-this-project-x3tuz5.streamlit.app/Visualize_the_Data)
+## Deliverables
+This project resulted in 2 deliverables:
+1. A Tableau Dashboard for quick exploration of the dataset
+2. A Streamlit Website for details about the project, a full breakdown of the analysis, and resulting visualizations of the analysis
+
+Dashboard: [Tableau Link](https://public.tableau.com/app/profile/emily.huang1804/viz/GunViolenceTrendsinAmericafrom2014-2023/Dashboard1)
+![Tableau preview](./images/dashboard_preview.png)
+
+Website: [Streamlit Link](https://huang-emily-gun-violence-trends-1-about-this-project-x3tuz5.streamlit.app/Visualize_the_Data)
+
+- Details about the project
+![Streamlit preview](./images/streamlit_preview_1.png)
+- Full breakdown of the analysis
+![Streamlit preview](./images/streamlit_preview_2.png)
+- Resulting visualizations of the analysis
+![Streamlit preview](./images/streamlit_preview_3.png)
 
 ## Tools used
 
 - **Programming**: Python, SQL
-- **Visualizations**: Power BI, Python (Matplotlib, Seaborn)
+- **Visualizations**: Tableau, Python (Matplotlib, Seaborn)
 - **Code Management**: SQL Server Management Studio, Jupyter Notebook
 
 ## Proposed Questions
