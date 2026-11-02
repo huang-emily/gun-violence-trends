@@ -1,4 +1,4 @@
-# Data Analytics Study: Gun Violence Trends in the USA
+# Data Analytics Study: Gun Violence Trends in America
 This repository contains all files used to create the PDF report titled "Gun Violence Trends in America". The report contains all relevant files and visualizations that helped show the rising trend in mass shooting incidents.
 
 ## Deliverables
